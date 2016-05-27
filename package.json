@@ -1,0 +1,20 @@
+{
+  "name": "fb-thread-printer",
+  "version": "1.0.0",
+  "description": "A MEAN app that outputs Facebook comment threads in a print-friendly, text-only format",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.13.3",
+    "express": "^4.13.3",
+    "mongodb": "^2.1.6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/richardlthomas/fb-thread-printer.git"
+  },
+  "license": "MIT"
+}
