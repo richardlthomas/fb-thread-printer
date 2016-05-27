@@ -5,112 +5,99 @@ angular.module("commentsApp", ['ngRoute'])
                 templateUrl: "list.html",
                 controller: "ListController",
                 resolve: {
-                    contacts: function(Contacts) {
-                        return Contacts.getContacts();
+                    comments: function(Comments) {
+                        return Comments.getComments();
                     }
                 }
             })
-            .when("/new/contact", {
-                controller: "NewContactController",
-                templateUrl: "contact-form.html"
+            .when("/new/comment", {
+                controller: "NewCommentController",
+                templateUrl: "comment-form.html"
             })
-            .when("/contact/:contactId", {
-                controller: "EditContactController",
-                templateUrl: "contact.html"
+            .when("/comment/:commentId", {
+                controller: "EditCommentController",
+                templateUrl: "comment.html"
             })
             .otherwise({
                 redirectTo: "/"
             })
     })
-    .service("Contacts", function($http) {
-        this.getContacts = function() {
-            return $http.get("/contacts").
+    .service("Comments", function($http) {
+        this.getComments = function() {
+            return $http.get("/comments").
                 then(function(response) {
                     return response;
                 }, function(response) {
-                    alert("Error finding contacts.");
+                    alert("GET error.");
                 });
         }
-        this.createContact = function(contact) {
-            return $http.post("/contacts", contact).
+        this.createComment = function(comment) {
+            return $http.post("/comments", comment).
                 then(function(response) {
                     return response;
                 }, function(response) {
-                    alert("Error creating contact.");
+                    alert("POST error.");
                 });
         }
-        this.getContact = function(contactId) {
-            var url = "/contacts/" + contactId;
+        this.getComment = function(commentId) {
+            var url = "/comments/" + commentId;
             return $http.get(url).
                 then(function(response) {
                     return response;
                 }, function(response) {
-                    alert("Error finding this contact.");
+                    alert("GET/{id} error.");
                 });
         }
-        this.editContact = function(contact) {
-            var url = "/contacts/" + contact._id;
-            console.log(contact._id);
-            return $http.put(url, contact).
+        this.editComment = function(comment) {
+            var url = "/comments/" + comment._id;
+            console.log(comment._id);
+            return $http.put(url, comment).
                 then(function(response) {
                     return response;
                 }, function(response) {
-                    alert("Error editing this contact.");
-                    console.log(response);
-                });
-        }
-        this.deleteContact = function(contactId) {
-            var url = "/contacts/" + contactId;
-            return $http.delete(url).
-                then(function(response) {
-                    return response;
-                }, function(response) {
-                    alert("Error deleting this contact.");
+                    alert("POST/{id} error.");
                     console.log(response);
                 });
         }
     })
-    .controller("ListController", function(contacts, $scope) {
-        $scope.contacts = contacts.data;
+    .controller("ListController", function(comments, $scope) {
+        $scope.comments = comments.data;
     })
-    .controller("NewContactController", function($scope, $location, Contacts) {
+    .controller("NewCommentController", function($scope, $location, Comments) {
         $scope.back = function() {
             $location.path("#/");
         }
 
-        $scope.saveContact = function(contact) {
-            Contacts.createContact(contact).then(function(doc) {
-                var contactUrl = "/contact/" + doc.data._id;
-                $location.path(contactUrl);
+        $scope.saveComment = function(comment) {
+            Comments.createComment(comment).then(function(doc) {
+                var commentUrl = "/comment/" + doc.data._id;
+                $location.path(commentUrl);
             }, function(response) {
                 alert(response);
             });
         }
     })
-    .controller("EditContactController", function($scope, $routeParams, Contacts) {
-        Contacts.getContact($routeParams.contactId).then(function(doc) {
-            $scope.contact = doc.data;
+    .controller("EditCommentController", function($scope, $routeParams, Comments) {
+        Comments.getComment($routeParams.commentId).then(function(doc) {
+            $scope.comment = doc.data;
         }, function(response) {
             alert(response);
         });
 
         $scope.toggleEdit = function() {
             $scope.editMode = true;
-            $scope.contactFormUrl = "contact-form.html";
+            $scope.commentFormUrl = "comment-form.html";
         }
 
         $scope.back = function() {
             $scope.editMode = false;
-            $scope.contactFormUrl = "";
+            $scope.commentFormUrl = "";
         }
 
-        $scope.saveContact = function(contact) {
-            Contacts.editContact(contact);
+        $scope.saveComment = function(comment) {
+            Comments.editComment(comment);
             $scope.editMode = false;
-            $scope.contactFormUrl = "";
+            $scope.commentFormUrl = "";
         }
 
-        $scope.deleteContact = function(contactId) {
-            Contacts.deleteContact(contactId);
-        }
     });
